@@ -1,0 +1,12 @@
+{
+    "name": "ai-tts-google",
+    "version": "1.0.0",
+    "description": "Text-to-Speech using Google",
+    "main": "server.js",
+    "scripts": {},
+    "dependencies": {
+        "@google-cloud/text-to-speech": "*",
+        "@aheadai/unit":"*",
+        "path":"0.12.7"
+    }
+}
