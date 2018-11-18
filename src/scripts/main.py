@@ -7,7 +7,7 @@ import sys
 #PARAMS
 ########################################
 PORT =8080
-
+VERSION="1.1"
 
 ########################################
 #JOB
@@ -33,7 +33,11 @@ import simplejson
 from japronto import Application
 import os, uuid
 
-
+def ping(request):
+    result={"live":"true","version":VERSION}
+    return request.Response(
+        mime_type='application/json; charset="utf-8"',
+        json=result)
 def run(request):
     print("POST /run")
     contentType=request.headers.get('Content-Type')
@@ -77,5 +81,6 @@ def run(request):
 print("START SERVER")
 app = Application()
 router = app.router
+router.add_route('/', ping,'GET')
 router.add_route('/run', run,'POST')
 app.run()
