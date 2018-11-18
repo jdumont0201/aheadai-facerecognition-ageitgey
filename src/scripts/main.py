@@ -13,7 +13,7 @@ PORT =8080
 #JOB
 ########################################
 def runTask(input):
-    print("runTask")
+    print(" * runTask")
     imagePath=input["path"]
     image=face_recognition.load_image_file(imagePath)
     face_locations=face_recognition.face_locations(image)
@@ -36,31 +36,30 @@ import os, uuid
 
 def run(request):
     print("POST /run")
-    print(request)
-    print(request.headers)
     contentType=request.headers.get('Content-Type')
-    print("Content-Type: "+contentType)
+    print("CONTENT_TYPE     : "+contentType)
     contentLength=request.headers.get('Content-Length')
     files=request.files;
     
-    print("Nb files:"+str(len(files)))
+    print("NB_FILES         : "+str(len(files)))
     if(contentType[:19]=="multipart/form-data"):
         fileinfo=files["file"]
         fname = fileinfo.name
-        print("FILE_NAME : "+fname)
+        print("FILE_NAME        : "+fname)
         extn = os.path.splitext(fname)[1]
         cname = str(uuid.uuid4()) + extn
         print("FILE_UNIQUE_NAME : "+cname)
         dir_path = os.path.dirname(os.path.realpath(__file__))
         saveFilePath = dir_path+"/../data/input/" + cname
-        print("SAVE_FILE_PATH",saveFilePath)
+        print("SAVE_FILE_PATH   : ",saveFilePath)
         fh = open(saveFilePath, 'wb')
         fh.write(fileinfo.body)
         input={'path':saveFilePath,'mode':'MULTIPART'}
         output=runTask(input)
         js=simplejson.dumps(output)
+        os.remove(saveFilePath) 
         result={"success":"true","result":js}
-        print(result)
+        print("RESULT           : " ,result)
         return request.Response(
         mime_type='application/json; charset="utf-8"',
         json=result)
@@ -75,6 +74,7 @@ def run(request):
 
 
 #START SERVER
+print("START SERVER")
 app = Application()
 router = app.router
 router.add_route('/run', run,'POST')
